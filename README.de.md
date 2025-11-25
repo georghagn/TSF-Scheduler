@@ -26,12 +26,10 @@
 
 ## Installation
 
-*(To be done: my Metacello configuration or installation script)*
-
 ```smalltalk
 Metacello new
     baseline: 'TsfScheduler';
-    repository: 'github://myname/TSF-Scheduler';
+    repository: 'github://georghagn/TSF-Scheduler';
     load.
 ```
 
