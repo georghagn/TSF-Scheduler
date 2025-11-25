@@ -27,7 +27,7 @@
 ```smalltalk
 Metacello new
     baseline: 'TsfScheduler';
-    repository: 'github://georgh/TSF-Scheduler';
+    repository: 'github://georghagn/TSF-Scheduler';
     load.
 ```
 
