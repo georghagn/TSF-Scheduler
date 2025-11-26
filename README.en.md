@@ -139,10 +139,10 @@ Special thanks go to my AI sparring partner for the intensive and valuable discu
 
 MIT
 
-## Kontakt
+## Contact
 
 If you have any questions or are interested in this project, you can reach me at
 📧 **dev.georgh [at] hconsult.biz**
 
-*(Please do not send inquiries to the private GitHub account addresses.)*
+<sup>*(Please do not send inquiries to the private GitHub account addresses.)*</sup>
 

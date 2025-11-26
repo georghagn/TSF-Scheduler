@@ -138,9 +138,7 @@ MIT
 
 ## Kontakt
 
-Bei Fragen oder Interesse an diesem Projekt erreichen Sie mich unter:
+Bei Fragen oder Interesse an diesem Projekt erreichen Sie mich unter:   
 📧 **dev.georgh [at] hconsult.biz**
 
-*(Bitte keine Anfragen an die privaten GitHub-Account-Adressen)*
-
-
+<sup>*(Bitte keine Anfragen an die privaten GitHub-Account-Adressen)*</sup>
