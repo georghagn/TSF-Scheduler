@@ -1,6 +1,3 @@
-"
-I am the baseline TSF-Scheduler project.
-"
 Class {
 	#name : 'BaselineOfTsfScheduler',
 	#superclass : 'BaselineOf',
@@ -12,26 +9,12 @@ Class {
 BaselineOfTsfScheduler >> baseline: spec [
 	<baseline>
 
-	spec for: #common do: [ 
-		self defineDependencies: spec.
+	spec for: #common do: [
+		spec repository: 'github://georghagn/TSF-Scheduler:main/src'.
+
 		self definePackages: spec.
-		self defineGroups: spec 
-	]
-
-]
-
-{ #category : 'baselines - dependencies' }
-BaselineOfTsfScheduler >> defineDependencies: spec [
-
-
-]
-
-{ #category : 'baselines - groups' }
-BaselineOfTsfScheduler >> defineGroups: spec [
-
-	spec group: 'core' with: #( 'TSF-Scheduler').
-	spec group: 'tests' with: #('TSF-Scheduler-Tests').
-	spec group: 'default' with: #('tests').
+		self defineGroups: spec.
+	].
 ]
 
 { #category : 'baselines - packages' }
@@ -39,10 +22,15 @@ BaselineOfTsfScheduler >> definePackages: spec [
 
 	spec
 		package: 'TSF-Scheduler';
-		package: 'TSF-Scheduler-Tests' with: [ spec requires: #( 'TSF-Scheduler' ) ]
+		package: 'TSF-Scheduler-Tests' with: [ 
+			spec requires: #( 'TSF-Scheduler' ) 
+		].
 ]
 
-{ #category : 'accessing' }
-BaselineOfTsfScheduler >> projectClass [
-	^ MetacelloCypressBaselineProject
+{ #category : 'baselines - groups' }
+BaselineOfTsfScheduler >> defineGroups: spec [
+
+	spec group: 'core' with: #( 'TSF-Scheduler' ).
+	spec group: 'tests' with: #( 'TSF-Scheduler-Tests' ).
+	spec group: 'default' with: #( 'core' ).
 ]
