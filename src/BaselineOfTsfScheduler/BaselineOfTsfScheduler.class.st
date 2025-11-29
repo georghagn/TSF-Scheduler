@@ -1,36 +1,33 @@
 Class {
-	#name : 'BaselineOfTsfScheduler',
-	#superclass : 'BaselineOf',
-	#category : 'BaselineOfTsfScheduler',
-	#package : 'BaselineOfTsfScheduler'
+    #name : 'BaselineOfTsfScheduler',
+    #superclass : 'BaselineOf',
+    #category : 'BaselineOfTsfScheduler'
 }
 
 { #category : 'baselines' }
 BaselineOfTsfScheduler >> baseline: spec [
-	<baseline>
+    <baseline>
 
-	spec for: #common do: [
-		spec repository: 'github://georghagn/TSF-Scheduler:main/src'.
+    spec for: #common do: [
+        spec repository: 'github://georghagn/TSF-Scheduler:main/src'.
 
-		self definePackages: spec.
-		self defineGroups: spec.
-	].
+        self definePackages: spec.
+        self defineGroups: spec.
+    ].
 ]
 
-{ #category : 'baselines - packages' }
+{ #category : 'packages' }
 BaselineOfTsfScheduler >> definePackages: spec [
-
-	spec
-		package: 'TSF-Scheduler';
-		package: 'TSF-Scheduler-Tests' with: [ 
-			spec requires: #( 'TSF-Scheduler' ) 
-		].
+    spec package: 'TSF-Scheduler'.
+    spec package: 'TSF-Scheduler-Tests' with: [
+        spec requires: #( 'TSF-Scheduler' )
+    ].
 ]
 
-{ #category : 'baselines - groups' }
+{ #category : 'groups' }
 BaselineOfTsfScheduler >> defineGroups: spec [
-
-	spec group: 'core' with: #( 'TSF-Scheduler' ).
-	spec group: 'tests' with: #( 'TSF-Scheduler-Tests' ).
-	spec group: 'default' with: #( 'core' ).
+    spec group: 'core' with: #( 'TSF-Scheduler' ).
+    spec group: 'tests' with: #( 'TSF-Scheduler-Tests' ).
+    spec group: 'default' with: #( 'core' ).
 ]
+
