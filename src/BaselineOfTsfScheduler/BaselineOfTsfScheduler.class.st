@@ -1,14 +1,5 @@
 "
 I am the baseline TSF-Scheduler project.
-
-baseline: spec
-	<baseline>
-
-	spec for: #common do: [ 
-		self defineDependencies: spec.
-		self definePackages: spec.
-		self defineGroups: spec 
-	]
 "
 Class {
 	#name : 'BaselineOfTsfScheduler',
@@ -48,7 +39,8 @@ BaselineOfTsfScheduler >> definePackages: spec [
 
 	spec
 		package: 'TSF-Scheduler';
-		package: 'TSF-Scheduler-Tests' with: [ spec requires: #( 'TSF-Scheduler' ) ].
+		package: 'TSF-Scheduler-Tests' with: [ spec requires: #( 'TSF-Scheduler' ) ];
+		repository: 'github://georghagn/TSF-Scheduler:main/src';
 
 
 ]
