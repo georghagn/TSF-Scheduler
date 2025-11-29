@@ -40,7 +40,7 @@ BaselineOfTsfScheduler >> definePackages: spec [
 	spec
 		package: 'TSF-Scheduler';
 		package: 'TSF-Scheduler-Tests' with: [ spec requires: #( 'TSF-Scheduler' ) ];
-		repository: 'github://georghagn/TSF-Scheduler:main/src';
+		repository: 'github://georghagn/TSF-Scheduler:main/src'.
 
 
 ]
