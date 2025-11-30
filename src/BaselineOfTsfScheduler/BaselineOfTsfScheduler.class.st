@@ -16,6 +16,6 @@ BaselineOfTsfScheduler >> baseline: spec [
 
     spec group: 'core' with: #( 'TSF-Scheduler' ).
     spec group: 'tests' with: #( 'TSF-Scheduler-Tests' ).
-    spec group: 'default' with: #( 'core' ).
+    spec group: 'default' with: #( 'core' 'tests').
 
 ]
