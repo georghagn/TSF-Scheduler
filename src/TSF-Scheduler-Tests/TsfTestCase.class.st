@@ -19,3 +19,13 @@ TsfTestCase >> setUp [
 	(Delay forMilliseconds: 10) wait.
 
 ]
+
+{ #category : 'running' }
+TsfTestCase >> tearDown [ 
+
+	TsfCron  reset.
+	TsfScheduler  reset.
+	
+	super tearDown.
+	
+]
