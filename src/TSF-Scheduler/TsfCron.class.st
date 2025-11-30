@@ -24,11 +24,35 @@ Class {
 	#tag : 'Task'
 }
 
+{ #category : 'accessing' }
+TsfCron class >> current [
+
+	uniqueInstance ifNil: [ uniqueInstance := self new ].
+	^ uniqueInstance
+]
+
+{ #category : 'class initialization' }
+TsfCron class >> reset [
+
+	uniqueInstance ifNotNil: [ 
+		uniqueInstance stop. 
+		uniqueInstance := nil.
+	].
+
+]
+
 { #category : 'class initialization' }
 TsfCron class >> start [
 
 	self current start.
 
+]
+
+{ #category : 'class initialization' }
+TsfCron class >> stop [
+
+	uniqueInstance ifNotNil: [ uniqueInstance stop ].
+	
 ]
 
 { #category : 'adding' }

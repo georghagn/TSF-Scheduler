@@ -24,10 +24,34 @@ Class {
 	#tag : 'Core'
 }
 
+{ #category : 'accessing' }
+TsfScheduler class >> current [
+	
+    uniqueInstance ifNil: [ uniqueInstance := self new ].
+    ^ uniqueInstance
+]
+
+{ #category : 'class initialization' }
+TsfScheduler class >> reset [
+
+    uniqueInstance ifNotNil: [
+        uniqueInstance stop.
+        uniqueInstance := nil.
+    ].
+
+]
+
 { #category : 'actions' }
 TsfScheduler class >> start [
 
 	self current start
+]
+
+{ #category : 'actions' }
+TsfScheduler class >> stop [ 
+
+	uniqueInstance ifNotNil: [ uniqueInstance stop ].
+
 ]
 
 { #category : 'accessing' }
