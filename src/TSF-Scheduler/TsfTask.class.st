@@ -36,10 +36,34 @@ Class {
 	#tag : 'Task'
 }
 
+{ #category : 'class initialization' }
+TsfTask class >> defaultFrequency [
+
+	^ 24 hours
+]
+
 { #category : 'default' }
 TsfTask class >> defaultName [ 
 
 	^ 'Unnamed Task'.
+]
+
+{ #category : 'instance creation' }
+TsfTask class >> named: aString do: aBlock [
+
+	^ self new
+		name: aString;
+		action: aBlock;
+		yourself
+]
+
+{ #category : 'instance creation' }
+TsfTask class >> named: aString receiver: anObject selector: aSymbol [
+
+	^ self new
+		name: aString;
+		action: (MessageSend receiver: anObject selector: aSymbol);
+		yourself
 ]
 
 { #category : 'accessing' }
