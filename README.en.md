@@ -27,7 +27,7 @@
 ```smalltalk
 Metacello new
     baseline: 'TsfScheduler';
-    repository: 'github://georgh/TSF-Scheduler';
+    repository: 'github://georghagn/TSF-Scheduler:main';
     load.
 ```
 
@@ -138,6 +138,15 @@ Special thanks go to my AI sparring partner for the intensive and valuable discu
 ## License
 
 MIT
+
+## Contact
+
+If you have any questions or are interested in this project, you can reach me at   
+📧 *dev.georgh [at] hconsult.biz*
+
+<sup>*(Please do not send inquiries to the private GitHub account addresses.)*</sup>
+
+
 
 
 
