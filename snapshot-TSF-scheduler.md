@@ -1,5 +1,5 @@
 
-# Projektstatus-Snapshot: tsf-scheduler (v1.0 Stable)
+# Projektstatus-Snapshot: TSF-Scheduler (v1.0 Stable)
 
 **Datum:** 23. November 2025
 **Kontext:** Teil der TSF (Tiny Smalltalk Framework) Suite.
