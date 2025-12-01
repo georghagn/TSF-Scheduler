@@ -66,6 +66,17 @@ TsfTask class >> named: aString receiver: anObject selector: aSymbol [
 		yourself
 ]
 
+{ #category : 'instance creation' }
+TsfTask class >> named: aString receiver: anObject selector: aSymbol frequency: aDuration [
+
+    | task |
+    
+    task := self named: aString receiver: anObject selector: aSymbol.
+    task frequency: aDuration.
+      
+    ^ task
+]
+
 { #category : 'accessing' }
 TsfTask >> action [
 
