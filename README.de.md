@@ -18,15 +18,18 @@
 
 * **Thread-Safe:** Zum Schutz der Warteschlangen-Queue und für atomare Operationen wird der Mechanismus *`Mutex`* verwendet.
 * **Architecture:** Trennung der Zuständigkeiten zwischen *`TsfCron`* (Timer) und *`TsfScheduler`* (Worker).
-* **Dual Mode:** Unterstützt werden sowohl **Blocks** (für schnelles scripting) als auch **Subclasses** (für "clean Command Pattern Architecture").
 * **Smart Scheduling:** Um das "Stapeln" von Task in der Ausführungs-Queue zu verhindern, wird eine **Fixed Delay** Strategie für periodische Tasks verwendet. Ein Task wird erst *nach* seiner Beendigung wieder in den Scheduler geschoben.
 * **Idempotency:** Sicheres updating der Task-Konfiguration zur Laufzeit ohne die Jobs zu duplizieren.
 * **Lifecycle Management:** Unterstützt Lifecycle Stati für *`pause`*, *`resume`*, und *`cancel`* von laufenden Tasks.
 * **Graceful Shutdown:** Kooperatives Thread-Termination stellt sicher, daß Resourcen in keinem inkonsistenten Zustand verbeliben.
 
-## Installation
+## Architectur
 
-*(To be done: my Metacello configuration or installation script)*
+- **TsfScheduler:** Ein Singleton Worker, welcher die Task-Queue verarbeitet. Er hat keine Ahnung von Zeit, nur von Arbeit. Er verarbeitet Tasks sequentiell in einem Background-Prozess.
+- **TsfCron:** Ein Singleton Ttimer, welcher eine priorisierte Queue von periodischen Tasks verwaltet. Er wacht nur auf, wenn ein Task an der Reihe ist, oder wenn ein neuer Task hinzugefügt wird. (Interruptible Wait), dies stellt sicher, dass die CPU im Idle Modus zu 0% belastet wird.
+- **TsfTask:** Die atomare Arbeitseinheit des TSF-Schedulers. Er kapselt **was** getan werden muss (die Logik) und **in welchem Zustand** sich die Arbeit befindet (State Management).
+
+## Installation
 
 ```smalltalk
 Metacello new
@@ -35,9 +38,9 @@ Metacello new
     load.
 ```
 
-## Usage
+## Usage the Scheduler
 
-### 1. Starting the System
+### 1. Starting the Scheduler System
 
 *TSF Scheduler* besteht aus Scheduler (führt Tasks aus) und Cron (verwaltet Scheduling-Zeitpunkte).
 
@@ -46,7 +49,7 @@ TsfScheduler current start.
 TsfCron current start.
 ```
 
-### 2. One-Off Tasks (Fire and Forget)
+### 2. Scheduler One-Off Tasks (Fire and Forget)
 
 Für einfache "background operations"" können Smalltalk-Blöcke direct mit dem Scheduler benutzt werden
 
@@ -57,50 +60,7 @@ TsfScheduler current scheduleBlock: [
 ].
 ```
 
-### 3. Periodic Tasks (The "Scripting" Way)
-
-Es können sich wiederholende Tasks in den Scheduler gestellt werden. Die Methode *ensureTaskNamed:* verhindert doppelte Tasks beim erneuten anlaufen der scripts.
-
-```smalltalk
-TsfCron current 
-    ensureTaskNamed: 'System Cleanup' 
-    frequency: 10 minutes
-    action: [ 
-        Transcript show: 'Running cleanup...'; cr.
-        "Cleanup logic here"
-    ].
-```
-
-### 4. Periodic Tasks (The "Robust" Way)
-
-Für komplexere Logiken sollte man große Blöcke vermeiden. Stattdessen kann man eine Subclass von *TsfTask* anlegen und entsprechende execute-actions implementieren.
-
-**Define the class:**
-
-```smalltalk
-TsfTask subclass: #LogRotationTask
-    instanceVariableNames: ''
-    package: 'MyApp-Maintenance'
-```
-
-**Implement the logic:**
-
-```smalltalk
-LogRotationTask >> executeAction
-    Transcript show: 'Rotating logs...'; cr.
-    "Complex logic goes here, e.g., file access, compression"
-```
-
-**Schedule it:**
-
-```smalltalk
-TsfCron current 
-    ensureTask: 'Log Rotation' 
-    class: LogRotationTask 
-    frequency: 1 hour.
-```
-
-### 5. Lifecycle Control
+### 3. Scheduler Lifecycle Control
 
 Bereits gestartete Tasks können sogar nach ihrem Start noch kontrolliert werden.
 
@@ -113,12 +73,7 @@ task resume.  "Resumes execution"
 task cancel.  "Permanently stops and removes the task"
 ```
 
-## Architectur
-
-- **TsfScheduler:** Ein *Singleton worker* , welcher die Task-Queue verarbeitet. Er hat keine Ahnung von Zeit, nur von Arbeit. Er verarbeitet Tasks sequentiell in einem Background-Prozess.
-- **TsfCron:** Ein *Singleton timer* , welcher eine priorisierte Queue von periodischen Tasks verwaltet. Er wacht nur auf, wenn ein Task an der Reihe ist, oder wenn ein neuer Task hinzugefügt wird. (Interruptible Wait), dies stellt sicher, dass die CPU im Idle Modus zu 0% belastet wird.
-
-## Error Handling
+### 4. Scheduler Error Handling
 
 Aufgaben fangen ihre eigenen Fehler ab, um einen Absturz des Worker-Threads zu verhindern. Sie können für jede Aufgabe einen eigenen Fehlerbehandler oder einen globalen Fehlerbehandler definieren.
 
@@ -129,6 +84,93 @@ TsfScheduler current globalErrorHandler: [ :task :error |
 		showCr: task name.
 ].
 ```
+
+## Using TsfTask: Die generische Arbeitseinheit
+
+Das "Dual Mode" Konzept. Die Klasse unterstützt zwei Arten der Nutzung, je nach Komplexität der Aufgabe:
+
+### 1. Task Scripting Mode (Ad-Hoc via Blöcke)
+
+Ideal für schnelle Wartungsaufgaben, One-Liners oder Konfigurationen via Workspace. Hierbei wird ein `BlockClosure` (oder ein `MessageSend`) direkt in den Task injiziert.
+
+**Vorteil:** Kein Overhead durch neue Klassen.
+**Nutzung 1:** Via `TsfCron >> #ensureTaskNamed:frequency:action:`
+
+```smalltalk
+"Beispiel: Ein Task, der alle 5 Minuten den Speicher bereinigt"
+TsfCron current 
+    ensureTaskNamed: 'GarbageCollector' 
+    frequency: 5 minutes 
+    action: [ Smalltalk garbageCollect ].
+```
+
+oder alternativ: 
+
+**Nutzung 2:** Via `TsfTask >> #named:do:`
+
+```smalltalk
+task := TsfTask named: 'GarbageCollector'
+    do: [ Smalltalk garbageCollect ].
+```
+
+### Task 2. OOP Mode (Robuster Smalltalk Way)
+
+Ideal für komplexe Logik, die eigenen State benötigt, testbar sein muss oder Abhängigkeiten hat. 
+
+**Vorteil:** Saubere Kapselung, Wiederverwendbarkeit und bessere Testbarkeit.
+**Nutzung:**
+
+```smalltalk
+| task |
+
+"Definition"
+Object subclass: #MyDatabaseExport
+    ...
+
+!MyDatabaseExport methodsFor: 'actions'!
+runAction
+    "Hier die komplexe Logik implementieren"
+    Database exportTo: 'backup.sql'.
+    ^ 'Export successful'
+! !
+
+"Registrierung"
+task := TsfTask 
+			named: 'NightlyDBExport' 
+			receiver: MyDatabaseExport 
+			selector: #runAction 
+			frequency: 24 hours.
+			
+task execute.
+```
+
+
+## 3. Task Lifecycle & Zustandsautomat
+
+Ein Task durchläuft einen definierten Lebenszyklus, der vom `TsfScheduler` gesteuert wird.
+
+  * `#pending`: Task wartet auf Ausführung (Initialzustand).
+  * `#running`: Task wird aktuell vom Worker-Thread ausgeführt.
+  * `#finished`: Erfolgreich beendet.
+  * `#failed`: Ein Fehler ist aufgetreten (wird in `caughtError` gespeichert).
+  * `#cancelled`: Task wurde manuell abgebrochen (wird nicht neu eingeplant).
+  * `#skipped`: Task war pausiert (`isPaused`), Ausführung wurde übersprungen, aber Timer läuft weiter.
+
+### Task Error Handling
+
+Fehler innerhalb der Ausführung werden **nicht** ignoriert, sondern gefangen:
+
+1.  Der Status wechselt auf `#failed`.
+2.  Die Exception wird in `caughtError` gespeichert.
+3.  Der `onFailure:` Block des Tasks wird ausgeführt (falls gesetzt).
+4.  Der globale Error-Handler des Schedulers wird informiert.
+
+
+```smalltalk
+task onFailure: [ :err | Transcript show: 'Oje: ', err description ].
+```
+
+
 ## Entwicklungsprozess & Credits
 
 Ein besonderer Dank gilt meinem KI-Sparringspartner für die intensiven und wertvollen Diskussionen während der Entwurfsphase. Die Fähigkeit der KI, verschiedene Architekturansätze (wie Polling-Loops vs. Priority Queues) schnell zu skizzieren und Vor- und Nachteile abzuwägen, hat die Entwicklung von `tsf-scheduler` erheblich beschleunigt und die Robustheit des Endergebnisses verbessert.
