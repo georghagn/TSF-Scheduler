@@ -8,9 +8,11 @@
 
 <sup>***TSF*** stands for ***Tiny Smalltalk Framework*** — a collection of minimalist tools for robust applications.</sup>
 
+
 ## Overview
 
 `TSF-Scheduler` provides a powerful mechanism to handle asynchronous background jobs and periodic tasks. It is designed with stability and "Smalltalk-way" usability in mind, distinguishing clearly between **scheduling logic** (Timer) and **execution logic** (Worker).
+
 
 ## Key Features
 
@@ -20,6 +22,7 @@
 * **Idempotency:** Safely re-evaluate and update task configurations at runtime without duplicating jobs.
 * **Lifecycle Management:** Support for *`pause`*, *`resume`*, and *`cancel`* on running tasks.
 * **Graceful Shutdown:** Cooperative thread termination ensures resources are not left in inconsistent states.
+
 
 ## Architecture
 
