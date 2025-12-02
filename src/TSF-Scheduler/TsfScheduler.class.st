@@ -14,7 +14,8 @@ Class {
 		'accessGuard',
 		'workSignal',
 		'isRunning',
-		'globalErrorHandler'
+		'globalErrorHandler',
+		'logger'
 	],
 	#classInstVars : [
 		'uniqueInstance'
@@ -80,10 +81,8 @@ TsfScheduler >> initialize [
 
 	"Default: simply write to transcript"
 	globalErrorHandler := [ :task :err | 
-		Transcript 
-			show: 'CRITICAL ERROR in Task ';
-			show: task name; cr.
-		Transcript show: err description; cr. 
+		self logError: 'CRITICAL ERROR in Task ' , task name.
+		self logError: err description.
 	].
 
 ]
@@ -92,6 +91,23 @@ TsfScheduler >> initialize [
 TsfScheduler >> isRunning [ 
 
 	^ isRunning
+]
+
+{ #category : 'error handling' }
+TsfScheduler >> logError: aString [
+
+    logger 
+        ifNotNil: [ logger error: '[Scheduler] ', aString ]
+        ifNil: [ Transcript show: '[Scheduler ERROR] '; show: aString; cr ]
+]
+
+{ #category : 'accessing' }
+TsfScheduler >> logInfo: aString [
+    "Die Weiche: Haben wir einen Logger? Wenn ja, nutze ihn. Wenn nein, Transcript."
+
+    logger 
+        ifNotNil: [ logger info: '[Scheduler] ', aString ]
+        ifNil: [ Transcript show: '[Scheduler] ' ; show: aString; cr ]
 ]
 
 { #category : 'private - actions' }
@@ -118,7 +134,7 @@ TsfScheduler >> runLoop [
 		self processNextTask.
 	].
 
-	Transcript show: 'TsfScheduler Worker gestoppt.'; cr.
+	self logInfo: 'TsfScheduler Worker gestoppt.'.
 	
 ]
 
@@ -148,7 +164,8 @@ TsfScheduler >> start [
 
 	isRunning := true.
 	workerProcess := [ self runLoop ] forkAt: Processor userBackgroundPriority named: 'TSF Scheduler Worker'.
-	Transcript show: 'TSF Scheduler Worker started' ; cr.
+
+	self logInfo: 'TSF Scheduler Worker started'.
 
 ]
 
@@ -168,6 +185,6 @@ TsfScheduler >> stop [
 		workerProcess := nil.
 	].
 
-	Transcript show: 'TSF Scheduler Worker stoped' ; cr.
+	self logInfo: 'TSF Scheduler Worker stoped'.
 	
 ]

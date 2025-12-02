@@ -29,7 +29,8 @@ Class {
 		'frequency',
 		'nextRun',
 		'isCancelled',
-		'isPaused'
+		'isPaused',
+		'logger'
 	],
 	#category : 'TSF-Scheduler-Task',
 	#package : 'TSF-Scheduler',
@@ -182,6 +183,23 @@ TsfTask >> isFinished [
 TsfTask >> isPaused [
 
 	^ isPaused
+]
+
+{ #category : 'error handling' }
+TsfTask >> logError: aString [
+
+    logger 
+        ifNotNil: [ logger error: '[Scheduler] ', aString ]
+        ifNil: [ Transcript show: '[Scheduler ERROR] '; show: aString; cr ]
+]
+
+{ #category : 'accessing' }
+TsfTask >> logInfo: aString [
+    "Die Weiche: Haben wir einen Logger? Wenn ja, nutze ihn. Wenn nein, Transcript."
+
+    logger 
+        ifNotNil: [ logger info: '[Scheduler] ', aString ]
+        ifNil: [ Transcript show: '[Scheduler] ' ; show: aString; cr ]
 ]
 
 { #category : 'accessing' }

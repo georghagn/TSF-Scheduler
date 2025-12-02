@@ -14,7 +14,8 @@ Class {
 		'accessGuard',
 		'wakeUpSignal',
 		'workerProcess',
-		'isRunning'
+		'isRunning',
+		'logger'
 	],
 	#classInstVars : [
 		'uniqueInstance'
@@ -100,13 +101,9 @@ TsfCron >> ensureTask: aTaskName class: aTaskClass frequency: aDuration [
 
 	created 
 		ifTrue: [ 
-			Transcript 
-				show: 'Class-Task NEU: ';
-				showCr: aTaskName; cr.
+			self logInfo: 'Class-Task NEU: ' , aTaskName .
 		] ifFalse: [ 
-			Transcript 
-				show: 'Class-Task UPDATE: ';
-				show: aTaskName; cr.
+			self logInfo: 'Class-Task UPDATE: ' , aTaskName .
 		].
 
 	^ task
@@ -138,12 +135,11 @@ TsfCron >> ensureTaskNamed: aString frequency: aDuration action: aBlock [
 	task resume.
 
 	created ifTrue: [ 
-		Transcript 
-			show: 'Task CREATED NEW: ';
-			show: aString; cr.
-		] ifFalse: [ 
-			Transcript show: 'Task UPDATED: ';
-			show: aString; cr. ].
+		self logInfo: 'Task CREATED NEW: ' , aString .
+	] ifFalse: [ 
+		self logInfo: 'Task CREATED UPDATED: ' , aString .
+	].
+
 
 	^ task
 ]
@@ -167,6 +163,30 @@ TsfCron >> initialize [
 	accessGuard := Mutex new.
 	wakeUpSignal := Semaphore new.
 	isRunning := false.
+]
+
+{ #category : 'error handling' }
+TsfCron >> logError: aString [
+
+    logger 
+        ifNotNil: [ logger error: '[Scheduler] ', aString ]
+        ifNil: [ Transcript show: '[Scheduler ERROR] '; show: aString; cr ]
+]
+
+{ #category : 'accessing' }
+TsfCron >> logInfo: aString [
+    "Die Weiche: Haben wir einen Logger? Wenn ja, nutze ihn. Wenn nein, Transcript."
+
+    logger 
+        ifNotNil: [ logger info: '[Scheduler] ', aString ]
+        ifNil: [ Transcript show: '[Scheduler] '; show: aString; cr ]
+]
+
+{ #category : 'accessing' }
+TsfCron >> logger: aLoggerObject [
+
+    "Dependency Injection: Hier kommt der echte TsfLogger rein"
+    logger := aLoggerObject
 ]
 
 { #category : 'private - actions' }
@@ -252,7 +272,8 @@ TsfCron >> runLoop [
 	].
 
 	"The process only arrives here if isRunning has been set to false.."
-	Transcript show: 'TsfCron stopped.'; cr.
+	self logInfo: 'TsfCron stopped.'.
+
 ]
 
 { #category : 'accessing' }
@@ -263,7 +284,8 @@ TsfCron >> start [
 	isRunning := true.
 	workerProcess := [ self runLoop ] forkAt: Processor userBackgroundPriority named: 'TSF Cron Timer'.
 	
-	Transcript show: 'TSF Cron Timer started' ; cr.
+	self logInfo: 'TSF Cron Timer started'.
+
 
 ]
 
@@ -279,6 +301,8 @@ TsfCron >> stop [
     wakeUpSignal signal.
 
     workerProcess := nil.
+
+	self logInfo: 'TSF Cron Timer stoped'.
 ]
 
 { #category : 'private - actions' }
