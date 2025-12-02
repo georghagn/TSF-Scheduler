@@ -88,6 +88,12 @@ TsfScheduler >> initialize [
 
 ]
 
+{ #category : 'accessing' }
+TsfScheduler >> isRunning [ 
+
+	^ isRunning
+]
+
 { #category : 'private - actions' }
 TsfScheduler >> processNextTask [
 	| task |

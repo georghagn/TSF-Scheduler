@@ -205,6 +205,45 @@ TsfCron >> removeTask: aTask [
 	aTask cancel.
 ]
 
+{ #category : 'debugging' }
+TsfCron >> report [
+
+    Transcript 
+		clear; 
+		show: '=== TSF SCHEDULER REPORT ==='; cr.
+
+    Transcript 
+		show: 'Timer Status: ';
+		show: (isRunning ifTrue: ['RUNNING'] ifFalse: ['STOPPED']); cr.
+		
+    Transcript 
+		show: 'Worker Status: ';
+		show: (TsfScheduler current isRunning ifTrue: ['RUNNING'] ifFalse: ['STOPPED']); cr.
+    
+	 Transcript show: '------------------------------'; cr.
+    Transcript 
+		 show: 'QUEUED TASKS (';
+		 show: tasks size asString;
+		 show: '):'; cr.
+    
+    accessGuard critical: [
+        tasks do: [ :t |
+            Transcript 
+                show: '[';
+					show:  t state asString;
+					show: '] ';
+                show: t name;
+                show: ' (Next: ';
+					 show: t nextRun asTime asString;
+					show: ')';
+                cr.
+        ]
+    ].
+
+    Transcript show: '=============================='; cr.
+
+]
+
 { #category : 'private - actions' }
 TsfCron >> runLoop [
 

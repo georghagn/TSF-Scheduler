@@ -66,6 +66,17 @@ TsfTask class >> named: aString receiver: anObject selector: aSymbol [
 		yourself
 ]
 
+{ #category : 'instance creation' }
+TsfTask class >> named: aString receiver: anObject selector: aSymbol frequency: aDuration [
+
+    | task |
+    
+    task := self named: aString receiver: anObject selector: aSymbol.
+    task frequency: aDuration.
+      
+    ^ task
+]
+
 { #category : 'accessing' }
 TsfTask >> action [
 
@@ -123,13 +134,6 @@ TsfTask >> execute [
 	"Even paused tasks will reschedule themselves to keep them on schedule!"
 	self rescheduleIfPeriodic.
 	
-]
-
-{ #category : 'subclass creation' }
-TsfTask >> executeAction [
-
-	^ self subclassResponsibility
-
 ]
 
 { #category : 'accessing' }
@@ -261,47 +265,9 @@ TsfTask >> resume [
 ]
 
 { #category : 'actions' }
-TsfTask >> runAction [
+TsfTask >> runAction [ 
 
-	"Priority 1: A block was set (Scripting Mode)"
 	action ifNotNil: [ ^ action value ].
-    
-	"Priority 2: the subclass method calling (OO mode)"
-	^ self executeAction
-]
-
-{ #category : 'private' }
-TsfTask >> schedule [
-
-	"1. Hard Stop: If canceled, get out immediately (do not reschedule)"
-	isCancelled ifTrue: [ 
-		state := #cancelled. 
-		^ self 
-	].
-
-	state := #running.
-
-	"2. Pause Check: If paused, skip the action, but keep the timer."
-	isPaused ifFalse: [
-		[
-			result := self runAction.
-			state := #finished.
-			successBlock ifNotNil: [ successBlock value: result ].
-		] on: Error do: [ :ex |
-			"Error Handling as usual..."
-			caughtError := ex.
-			state := #failed.
-			failureBlock ifNotNil: [ failureBlock value: ex ].
-			TsfScheduler current handleError: ex forTask: self.
-		].
-	] ifTrue: [
-		state := #skipped. "new state, useful for debugging"
-	].
-
-	"3. Rescheduling (only if not cancelled)"
-	"Even paused tasks will reschedule themselves to keep them on schedule!"
-	self rescheduleIfPeriodic.
-	
 ]
 
 { #category : 'initialization' }
@@ -309,4 +275,10 @@ TsfTask >> setAction: aBlock [
 
 
 	action := aBlock 
+]
+
+{ #category : 'accessing' }
+TsfTask >> state [ 
+
+	^state
 ]

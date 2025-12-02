@@ -16,7 +16,7 @@ TsfTaskTest >> testBasicExecution [
 	task := TsfTask new.
 	task setAction: [ 10 + 20 ].
 
-	task schedule.
+	task execute.
 
 	self assert: task isFinished.
 	self deny: task isFailed.
@@ -31,7 +31,7 @@ TsfTaskTest >> testCancellation [
 	task := TsfTask new setAction: [ ran := true ].
 
 	task cancel.
-	task schedule.
+	task execute.
 
 	self assert: task isCancelled.
 	self deny: ran description: 'Cancelled Task must not execute the action.'.
@@ -47,7 +47,7 @@ TsfTaskTest >> testErrorHandling [
 	task setAction: [ error signal ].
 	task onFailure: [ :err | caughtError := err ].
 
-	task schedule.
+	task execute.
 
 	self assert: task isFailed.
 	self assert: (task caughtError ) equals: error .
@@ -63,7 +63,7 @@ TsfTaskTest >> testPauseResume [
 
 	"1. Test Pause"
 	task pause.
-	task schedule.
+	task execute.
 	self assert: task isPaused.
 	self deny: ran description: 'paused task must not execute the action'.
 
@@ -71,7 +71,7 @@ TsfTaskTest >> testPauseResume [
 
 	"2. Test Resume"
 	task resume.
-	task schedule.
+	task execute.
 	self assert: ran description: 'The ongoing task must execute the action.'.
 	
 ]
