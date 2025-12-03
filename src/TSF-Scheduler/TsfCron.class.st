@@ -169,8 +169,8 @@ TsfCron >> initialize [
 TsfCron >> logError: aString [
 
     logger 
-        ifNotNil: [ logger error: '[Scheduler] ', aString ]
-        ifNil: [ Transcript show: '[Scheduler ERROR] '; show: aString; cr ]
+        ifNotNil: [ logger error: '[TsfCron] ', aString ]
+        ifNil: [ Transcript show: '[TsfCron ERROR] '; show: aString; cr ]
 ]
 
 { #category : 'accessing' }
@@ -178,8 +178,8 @@ TsfCron >> logInfo: aString [
     "Die Weiche: Haben wir einen Logger? Wenn ja, nutze ihn. Wenn nein, Transcript."
 
     logger 
-        ifNotNil: [ logger info: '[Scheduler] ', aString ]
-        ifNil: [ Transcript show: '[Scheduler] '; show: aString; cr ]
+        ifNotNil: [ logger info: '[TsfCron] ', aString ]
+        ifNil: [ Transcript show: '[TsfCron] '; show: aString; cr ]
 ]
 
 { #category : 'accessing' }
@@ -207,7 +207,7 @@ TsfCron >> processDueTask [
 	"Execute only - DO NOT add again immediately!"
 	TsfScheduler current scheduleTask: task.
     
-	"DThe task itself (or the scheduler) must ensure that it returns after completion."
+	"The task itself (or the scheduler) must ensure that it returns after completion."
 	
 ]
 
@@ -228,39 +228,37 @@ TsfCron >> removeTask: aTask [
 { #category : 'debugging' }
 TsfCron >> report [
 
-    Transcript 
-		clear; 
-		show: '=== TSF SCHEDULER REPORT ==='; cr.
+	Transcript clear.
+	self 
+		logInfo: '=== TSF SCHEDULER REPORT ===';
+		logInfo: '=== TSF SCHEDULER REPORT ==='.
 
-    Transcript 
-		show: 'Timer Status: ';
-		show: (isRunning ifTrue: ['RUNNING'] ifFalse: ['STOPPED']); cr.
-		
-    Transcript 
-		show: 'Worker Status: ';
-		show: (TsfScheduler current isRunning ifTrue: ['RUNNING'] ifFalse: ['STOPPED']); cr.
+	self
+		logInfo: 'Timer Status: ';
+		logInfo: (isRunning ifTrue: ['RUNNING'] ifFalse: ['STOPPED']);
+		logInfo: 'Worker Status: ';
+		logInfo: (TsfScheduler current isRunning ifTrue: ['RUNNING'] ifFalse: ['STOPPED']).
     
-	 Transcript show: '------------------------------'; cr.
-    Transcript 
-		 show: 'QUEUED TASKS (';
-		 show: tasks size asString;
-		 show: '):'; cr.
+	 self 
+		logInfo: '------------------------------';
+		logInfo: 'QUEUED TASKS (';
+		logInfo: tasks size asString;
+		 logInfo: '):'.
     
-    accessGuard critical: [
-        tasks do: [ :t |
-            Transcript 
-                show: '[';
-					show:  t state asString;
-					show: '] ';
-                show: t name;
-                show: ' (Next: ';
-					 show: t nextRun asTime asString;
-					show: ')';
-                cr.
-        ]
-    ].
+	accessGuard critical: [
+		tasks do: [ :t |
+				self
+					logInfo: '[';
+					logInfo:  t state asString;
+					logInfo: '] ';
+					logInfo: t name;
+					logInfo: ' (Next: ';
+					logInfo: t nextRun asTime asString;
+					logInfo: ')'.
+		]
+	].
 
-    Transcript show: '=============================='; cr.
+	self logInfo: '=============================='.
 
 ]
 
