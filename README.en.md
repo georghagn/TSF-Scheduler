@@ -2,7 +2,7 @@
 |----:|
 |    |
 
-|[![Pharo Version](https://img.shields.io/badge/Pharo-12.0%2B-blue.svg)](https://pharo.org)|[![License](https://img.shields.io/badge/license-MIT-green.svg)](./LICENSE) [![Dependencies](https://img.shields.io/badge/dependencies-zero-brightgreen.svg)](#)|
+|[![Pharo Version](https://img.shields.io/badge/Pharo-12.0%2B-blue.svg)](https://pharo.org)|[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](./LICENSE) [![Dependencies](https://img.shields.io/badge/dependencies-zero-brightgreen.svg)](#)|
 |----|----|
 |![TSF-Scheduler Logo](logo-scheduler.png)| ***TSF-Scheduler***<br>A robust, thread-safe, lightweight and zero-dependency task scheduling framework for Smalltalk. Part of the **TSF (Tiny Smalltalk Framework)** suite.|
 
