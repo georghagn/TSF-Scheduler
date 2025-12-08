@@ -1,4 +1,8 @@
 "
+Copyright 2025 Georg Hagn
+SPDX-License-Identifier: Apache-2.0
+
+
 I, the Timer, i am Singleton, which manages the time and feeds the scheduler.
 
 - Function: Manage recurring tasks in a priority queue (sorted by *nextRun*).

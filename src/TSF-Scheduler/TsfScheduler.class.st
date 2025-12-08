@@ -1,4 +1,8 @@
 "
+Copyright 2025 Georg Hagn
+SPDX-License-Identifier: Apache-2.0
+
+
 I am  the Worker, a Singleton and know nothing of time, only see work
 
 - Function: I process a queue of *TsfTask* objects sequentially in a dedicated background process
