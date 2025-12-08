@@ -170,7 +170,7 @@ Special thanks go to my AI sparring partner for the intensive and valuable discu
 
 ## License
 
-MIT
+This project is licensed under the Apache 2.0 license. See LICENSE.
 
 
 ## Contact

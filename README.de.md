@@ -178,7 +178,7 @@ Ein besonderer Dank gilt meinem KI-Sparringspartner für die intensiven und wert
 
 ## License
 
-MIT
+Dieses Projekt steht unter der Apache 2.0 Lizenz. Siehe LICENSE.
 
 
 ## Kontakt
