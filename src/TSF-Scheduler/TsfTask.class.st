@@ -1,4 +1,8 @@
 "
+Copyright 2025 Georg Hagn
+SPDX-License-Identifier: Apache-2.0
+
+
 I am the work unit
 
 I encapsulate *what* needs to be done and its *state*.
