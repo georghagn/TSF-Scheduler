@@ -176,7 +176,7 @@ This project is licensed under the Apache 2.0 license. See LICENSE.
 ## Contact
 
 If you have any questions or are interested in this project, you can reach me at   
-📧 *dev.georgh [at] hconsult.biz*
+📧 *georghagn [at] tiny-frameworks.io*
 
 <sup>*(Please do not send inquiries to the private GitHub account addresses.)*</sup>
 
