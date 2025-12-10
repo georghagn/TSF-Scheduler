@@ -307,6 +307,12 @@ TsfCron >> stop [
 	self logInfo: 'TSF Cron Timer stoped'.
 ]
 
+{ #category : 'accessing' }
+TsfCron >> tasks [ 
+
+    ^ tasks
+]
+
 { #category : 'private - actions' }
 TsfCron >> waitForNextTask [
 	| delay nextTask now |
